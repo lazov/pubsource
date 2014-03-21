@@ -1,0 +1,24 @@
+diff -urN portage/pym/_emerge/unmerge.py portage.patched/pym/_emerge/unmerge.py
+--- portage/pym/_emerge/unmerge.py	2012-04-03 18:58:59.000000000 +0300
++++ portage.patched/pym/_emerge/unmerge.py	2012-04-03 19:07:41.000000000 +0300
+@@ -542,10 +542,19 @@
+ 	if clean_delay and not autoclean:
+ 		countdown(int(settings["CLEAN_DELAY"]), ">>> Unmerging")
+ 
++	# Set counter variables
++	curval, maxval = 1, len(unmerge_files)
++
+ 	for x in range(len(pkgmap)):
+ 		for y in pkgmap[x]["selected"]:
+-			writemsg_level(">>> Unmerging "+y+"...\n", noiselevel=-1)
++			message = ">>> Unmerging ({0} of {1}) {2}...\n".format(
++				colorize("MERGE_LIST_PROGRESS", str(curval)),
++				colorize("MERGE_LIST_PROGRESS", str(maxval)),
++				y)
++			writemsg_level(message, noiselevel=-1)
+ 			emergelog(xterm_titles, "=== Unmerging... ("+y+")")
++			curval += 1
++
+ 			mysplit = y.split("/")
+ 			#unmerge...
+ 			retval = portage.unmerge(mysplit[0], mysplit[1],
